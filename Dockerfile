@@ -4,6 +4,7 @@ MAINTAINER Michaël Faille <michael.faille@nuagebec.ca>
 
 
 ADD ./etcd /opt/etcd
+ADD supervisor-etcd.conf /etc/supervisor/conf.d/etcd.conf
 
 RUN  apt-get update -q && \
       DEBIAN_FRONTEND=noninteractive apt-get install -qy build-essential  && \
@@ -13,10 +14,10 @@ RUN  apt-get update -q && \
        ./make.bash --no-clean 2>&1 && \
        cd /opt/etcd && PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
        rm -R /opt/etcd && \
-       apt-get remove -y --purge autoconf build-essential
+       apt-get remove -y --purge build-essential
 
 ENV PATH /usr/local/go/bin:$PATH
 
 EXPOSE 4001 7001
 
-ENTRYPOINT ["/opt/etcd/bin/etcd"]
+CMD ["run.sh"]
