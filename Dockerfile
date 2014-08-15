@@ -1,4 +1,4 @@
-FROM nuagebec/ubuntu
+FROM nuagebec/ubuntu:14.04
 MAINTAINER Michaël Faille <michael.faille@nuagebec.ca>
 # Let's install go and etcd (from source).
 
