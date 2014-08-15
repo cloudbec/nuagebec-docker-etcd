@@ -6,7 +6,7 @@ MAINTAINER Michaël Faille <michael.faille@nuagebec.ca>
 ADD ./etcd /opt/etcd
 
 RUN  apt-get update -q && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -qy build-essential  &&
+      DEBIAN_FRONTEND=noninteractive apt-get install -qy build-essential  && \
        apt-get clean && \
        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \  
        wget -O - https://storage.googleapis.com/golang/go1.3.1.src.tar.gz | tar -v -C /usr/local -xzi && cd /usr/local/go/src && \
