@@ -11,12 +11,14 @@ RUN  apt-get update -q && \
        apt-get clean && \
        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \  
        wget -O - https://storage.googleapis.com/golang/go1.3.1.src.tar.gz | tar -v -C /usr/local -xzi && cd /usr/local/go/src && \
+       mkdir /data/persistent/gopath
        ./make.bash --no-clean 2>&1 && \
        cd /opt/etcd && PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
        rm -R /opt/etcd && \
        apt-get remove -y --purge build-essential
 
 ENV PATH /usr/local/go/bin:$PATH
+ENV GOPATH /data/persistent/gopath
 
 EXPOSE 4001 7001
 
