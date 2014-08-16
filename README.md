@@ -4,7 +4,7 @@ nuagebec-etcd
 etcd image for docker build on nuagebec/ubuntu:14.04 image
 
 A highly-available key value store for shared configuration and service discovery.
-etcd is inspired by [Apache ZooKeeper][zookeeper] and [doozer][doozer], with a focus on being:
+etcd is inspired by Apache ZooKeeper and doozer, with a focus on being:
 
 * *Simple*: curl'able user facing API (HTTP+JSON)
 * *Secure*: optional SSL client cert authentication
