@@ -13,8 +13,8 @@ etcd is inspired by [Apache ZooKeeper][zookeeper] and [doozer][doozer], with a f
 
 etcd is written in Go and uses the [Raft][raft] consensus algorithm to manage a highly-available replicated log.
 
-See [etcdctl][etcdctl] for a simple command line client.
-Or feel free to just use curl, as in the example below.
+Use etcdctl for a simple command line client.
+Or, feel free to just use curl, as in the example below :
 
 https://coreos.com/docs/distributed-configuration/getting-started-with-etcd/
 
