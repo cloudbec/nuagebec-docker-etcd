@@ -1,11 +1,26 @@
 nuagebec-etcd
 ====================
 
-
-----------
-
-
 etcd image for docker build on nuagebec/ubuntu:14.04 image
+
+A highly-available key value store for shared configuration and service discovery.
+etcd is inspired by [Apache ZooKeeper][zookeeper] and [doozer][doozer], with a focus on being:
+
+* *Simple*: curl'able user facing API (HTTP+JSON)
+* *Secure*: optional SSL client cert authentication
+* *Fast*: benchmarked 1000s of writes/s per instance
+* *Reliable*: properly distributed using Raft
+
+etcd is written in Go and uses the [Raft][raft] consensus algorithm to manage a highly-available replicated log.
+
+See [etcdctl][etcdctl] for a simple command line client.
+Or feel free to just use curl, as in the examples below.
+
+[zookeeper]: http://zookeeper.apache.org/
+[doozer]: https://github.com/ha/doozerd
+[raft]: http://raftconsensus.github.io/
+[etcdctl]: http://github.com/coreos/etcdctl/
+
 
 Volume
 ------
