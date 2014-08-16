@@ -11,7 +11,7 @@ etcd is inspired by Apache ZooKeeper and doozer, with a focus on being:
 * *Fast*: benchmarked 1000s of writes/s per instance
 * *Reliable*: properly distributed using Raft
 
-etcd is written in Go and uses the [Raft][raft] consensus algorithm to manage a highly-available replicated log.
+etcd is written in Go and uses the Raft consensus algorithm to manage a highly-available replicated log.
 
 Use etcdctl for a simple command line client.
 Or, feel free to just use curl, as in the example below :
