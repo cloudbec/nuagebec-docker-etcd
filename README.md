@@ -21,10 +21,10 @@ https://coreos.com/docs/distributed-configuration/getting-started-with-etcd/
 
 Related links :
 
-[zookeeper]: http://zookeeper.apache.org/
-[doozer]: https://github.com/ha/doozerd
-[raft]: http://raftconsensus.github.io/
-[etcdctl]: http://github.com/coreos/etcdctl/
+zookeeper: http://zookeeper.apache.org/
+doozer: https://github.com/ha/doozerd
+raft: http://raftconsensus.github.io/
+etcdctl: http://github.com/coreos/etcdctl/
 
 
 Volume
