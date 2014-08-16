@@ -42,5 +42,7 @@ Running
 
 You can use this base box standalone doing:
 
+```bash
 docker pull nuagebec/etcd:latest
-    docker run -d -p 4001:4001 -p 7001:7001 nuagebec/etcd:latest
+docker run -d -p 4001:4001 -p 7001:7001 nuagebec/etcd:latest
+```
