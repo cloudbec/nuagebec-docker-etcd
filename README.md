@@ -41,6 +41,7 @@ docker run -d -p 4001:4001 -p 7001:7001 nuagebec/etcd:latest
 
 ### Related links :
 
+* nuagebec/ubuntu: https://registry.hub.docker.com/u/nuagebec/ubuntu/
 * zookeeper: http://zookeeper.apache.org/
 * doozer: https://github.com/ha/doozerd
 * raft: http://raftconsensus.github.io/
