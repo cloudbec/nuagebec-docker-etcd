@@ -19,14 +19,6 @@ Or, feel free to just use curl, as in the example below :
 https://coreos.com/docs/distributed-configuration/getting-started-with-etcd/
 
 
-### Related links :
-
-* zookeeper: http://zookeeper.apache.org/
-* doozer: https://github.com/ha/doozerd
-* raft: http://raftconsensus.github.io/
-* etcdctl: http://github.com/coreos/etcdctl/
-
-
 Volume
 ------
 
@@ -46,3 +38,10 @@ You can use this base box standalone doing:
 docker pull nuagebec/etcd:latest
 docker run -d -p 4001:4001 -p 7001:7001 nuagebec/etcd:latest
 ```
+
+### Related links :
+
+* zookeeper: http://zookeeper.apache.org/
+* doozer: https://github.com/ha/doozerd
+* raft: http://raftconsensus.github.io/
+* etcdctl: http://github.com/coreos/etcdctl/
