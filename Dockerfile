@@ -1,6 +1,6 @@
 FROM mikefaille/go-base:latest
 MAINTAINER Michaël Faille <michael@faille.pw>
-# Let's install go and etcd (from source).
+# Let's install etcd and etcdctl (from source).
 
 
 ADD supervisor-etcd.conf /etc/supervisor/conf.d/etcd.conf
@@ -14,4 +14,4 @@ RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt
 
 EXPOSE 4001 7001
 
-CMD ["run.sh"]
+CMD ["/data/run.sh"]
