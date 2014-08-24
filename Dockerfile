@@ -25,4 +25,4 @@ ENV GOPATH /data/persistent/gopath
 
 EXPOSE 4001 7001
 
-CMD ["run.sh"]
+CMD ["/data/run.sh"]
