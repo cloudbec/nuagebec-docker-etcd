@@ -22,7 +22,7 @@ https://coreos.com/docs/distributed-configuration/getting-started-with-etcd/
 Volume
 ------
 
-/data/persitent to persist
+/data/persistent to persist
 
 
 Ports
