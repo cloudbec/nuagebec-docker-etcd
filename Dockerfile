@@ -12,6 +12,7 @@ RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt
     PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
     rm -R /opt/etcdctl
 
-EXPOSE 4001 7001
+# as seen on https://github.com/coreos/etcd/blob/master/Dockerfile
+EXPOSE 4001 7001 2379 2380
 
 CMD ["/data/run.sh"]
