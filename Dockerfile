@@ -4,6 +4,7 @@ MAINTAINER Michaël Faille <michael@faille.pw>
 
 
 ADD supervisor-etcd.conf /etc/supervisor/conf.d/etcd.conf
+ADD start-etcd.sh /data/start-etcd.sh
 
 RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt/etcd && \
     PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
@@ -14,5 +15,6 @@ RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt
 
 # as seen on https://github.com/coreos/etcd/blob/master/Dockerfile
 EXPOSE 4001 7001 2379 2380
+
 
 CMD ["/data/run.sh"]
