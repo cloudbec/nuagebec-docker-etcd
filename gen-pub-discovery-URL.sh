@@ -9,4 +9,5 @@ EOF
 
 echo "etcd url is $ETCD_DISCOVERY"
 echo "Env. file generated name's ./docker_env_file"
-
+echo ###
+echo "Please run \"docker run --env-file=docker_env_file nuagebec/etcd\""
