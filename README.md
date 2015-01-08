@@ -32,6 +32,21 @@ Ports
 7001
 Running
 
+
+Note : using ETCD discovery URL as docker env. variable is mandatory (for now)
+---
+
+A simply way to obtain this varaible is using this script
+
+```sh
+#/bin/sh
+# If env. var. named ETCD_DISCOVERY isn't set, discover it
+if [[ -z "$ETCD_DISCOVERY" ]]
+then ETCD_DISCOVERY=$(wget https://discovery.etcd.io/new  -O - ) && \
+     export ETCD_DISCOVERY ; fi
+```
+
+
 You can use this base box standalone doing:
 
 ```bash
