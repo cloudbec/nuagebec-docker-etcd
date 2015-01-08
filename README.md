@@ -46,7 +46,7 @@ then ETCD_DISCOVERY=$(wget https://discovery.etcd.io/new  -O - ) && \
      export ETCD_DISCOVERY ; fi
 ```
 
-lauching nuangebec/ETCD
+launching nuangebec/ETCD
 ---
 
 You can use this base box standalone doing :
