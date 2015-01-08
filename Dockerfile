@@ -9,10 +9,8 @@ RUN chmod +x /data/start-etcd.sh
 
 RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt/etcd && \
     PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
-    rm -R /opt/etcd && \
-    cd /opt && git clone  --depth=1 https://github.com/coreos/etcdctl/  && cd /opt/etcdctl && \
-    PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
-    rm -R /opt/etcdctl
+    cd /opt/etcd/etcdctl && go build main.go && mv main /usr/local/bin/etcdctl && \
+    rm -R /opt/etcd
 
 # as seen on https://github.com/coreos/etcd/blob/master/Dockerfile
 EXPOSE 4001 7001 2379 2380
