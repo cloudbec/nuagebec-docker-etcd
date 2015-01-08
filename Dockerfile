@@ -5,6 +5,7 @@ MAINTAINER Michaël Faille <michael@faille.pw>
 
 ADD supervisor-etcd.conf /etc/supervisor/conf.d/etcd.conf
 ADD start-etcd.sh /data/start-etcd.sh
+RUN chmod +x /data/start-etcd.sh
 
 RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt/etcd && \
     PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
