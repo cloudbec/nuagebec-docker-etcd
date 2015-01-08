@@ -8,8 +8,9 @@ ADD start-etcd.sh /data/start-etcd.sh
 RUN chmod +x /data/start-etcd.sh
 
 RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt/etcd && \
-    PATH=/usr/local/go/bin:$PATH ./build && mv bin/* /usr/local/bin && \
-    cd /opt/etcd/etcdctl && go build main.go && mv main /usr/local/bin/etcdctl && \
+    ./build && mv bin/* /usr/local/bin && \
+    cd /opt/etcd/etcdctl && \
+    go build main.go && mv main /usr/local/bin/etcdctl && \
     rm -R /opt/etcd
 
 # as seen on https://github.com/coreos/etcd/blob/master/Dockerfile
