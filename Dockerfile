@@ -14,6 +14,6 @@ RUN cd /opt && git clone --depth=1 https://github.com/coreos/etcd.git && cd /opt
 
 # as seen on https://github.com/coreos/etcd/blob/master/Dockerfile
 EXPOSE 4001 7001 2379 2380
-
+ADD docker_env_file /data/docker_env_file
 
 CMD ["/data/run.sh"]
