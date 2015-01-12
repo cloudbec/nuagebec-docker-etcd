@@ -28,6 +28,8 @@ else
         sleep 10
         
         etcdctl -C ETH0_IPv4:2379 member add `hostname` http://ETH0_IPv4:2380 > /data/.env_etcd
+        supervisorctl stop etcd
+        supervisorctl start etcd
 
     fi
 fi
