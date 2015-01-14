@@ -40,7 +40,7 @@ else
         #  supervisorctl stop etcd
 
 
-k
+
         export ETCD_DISCOVERY=""
 
         supervisorctl stop etcd
