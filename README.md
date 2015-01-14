@@ -48,7 +48,7 @@ then ETCD_DISCOVERY=$(wget https://discovery.etcd.io/new  -O - ) && \
      export ETCD_DISCOVERY ; fi
 ```
 
-launching nuangebec/ETCD
+launching nuagebec/etcd
 ---
 
 As discovery URL, starting your own is suggested.
