@@ -1,7 +1,9 @@
-#!/bin/sh
+/#!/bin/sh
 
 
-if [ -z $ETCD_DISCOVERY ]
+
+
+if [ -z $os.ETCD_DISCOVERY ]
 then
     cat > /data/.env_etcd << EOF
 $ETCD_DISCOVERY
@@ -21,7 +23,7 @@ then
 
     while read env_var; do
         export $env_var
-    done < /data/.env_etcd
+    done < /data/.etcd_initial_cluster_info
 
     echo $(etcd -name `hostname` -listen-client-urls  http://$ETH0_IPV4:2379,http://$ETH0_IPV4:4001 -advertise-client-urls http://$ETH0_IPv4:2379,http://$ETH0_IPv4:4001  -listen-peer-urls http://$ETH0_IPV4:2380 -initial-advertise-peer-urls http://$ETH0_IPV4:2380 2>&1)
        
@@ -36,7 +38,7 @@ else
 
         sleep 3
 
-        etcdctl -C $ETH0_IPV4:2379 member add `hostname` http://$ETH0_IPV4:2380 | grep -v "Added member named" | grep -v '^$' > /data/.env_etcd
+        etcdctl -C $ETH0_IPV4:2379 member add `hostname` http://$ETH0_IPV4:2380 | grep -v "Added member named" | grep -v '^$' > /data/.etcd_initial_cluster_info
         #  supervisorctl stop etcd
 
 
