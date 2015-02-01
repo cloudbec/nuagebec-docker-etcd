@@ -2,30 +2,79 @@ package main
 
 import (
 	"errors"
-	"io/ioutil"
+	"fmt"
+	"log"
 	"net"
 	"os"
+	"os/exec"
+	"syscall"
+	"time"
+
+	"github.com/coreos/go-etcd/etcd"
 )
 
 // http://blog.gopheracademy.com/advent-2013/day-06-service-discovery-with-etcd/
 
 func main() {
-	// used for test only
-	os.Setenv("ETCD_DISCOVERY", "testXS")
+	// used for test
+	os.Setenv("etcd_discovery", "testxs")
 
 	filename := ".env_etcd"
-	if len(os.Getenv("ETCD_DISCOVERY")) > 5 {
+	if len(os.Getenv("etcd_discovery")) > 5 {
 		if _, err := os.Stat(filename); os.IsNotExist(err) {
-			ioutil.WriteFile(filename, []byte(os.Getenv("ETCD_DISCOVERY")), 0600)
+			fmt.Printf("no such file or directory: %s", filename)
+			return
 		}
+
 	}
-	extIP, _ := externalIP()
-	print(extIP)
+
+	binary, lookErr := exec.LookPath("etcd")
+	if lookErr != nil {
+		panic(lookErr)
+	}
+
+	//	args := []string{"ls", "-a", "-l", "-h"}
+	args := []string{"ls,"}
+	env := os.Environ()
+
+	execErr := syscall.Exec(binary, args, env)
+	if execErr != nil {
+		panic(execErr)
+	}
+
+	client := etcd.NewClient([]string{"http://172.17.42.1:4002"})
+	cluster := client.GetCluster()
+	fmt.Println(cluster)
+	// client
+
+	// resp, err := client.Get("creds", false, false)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Print("TEST")
+	// log.Printf("Current creds: %s: %s\n", resp.Node.Key, resp.Node.Value)
+	// for {
+	// 	watchChan := make(chan *etcd.Response)
+	// 	loopWatch(client, "/creds", watchChan)
+	// }
+
 	// then
 	// cat > /data/.env_etcd << EOF
 	// $ETCD_DISCOVERY
 	// EOF
 	// fi
+
+}
+
+func loopWatch(client *etcd.Client, key string, watch chan *etcd.Response) {
+
+	time.Sleep(1000)
+	go client.Watch(key, 0, false, watch, nil)
+	fmt.Println("test")
+
+	log.Println("Waiting for an update...")
+	r := <-watch
+	log.Printf("Got updated creds: %s: %s\n", r.Node.Key, r.Node.Value)
 
 }
 
