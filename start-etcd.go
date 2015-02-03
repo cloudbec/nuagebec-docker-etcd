@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
-	"os/exec"
-	"syscall"
+	"strings"
 	"time"
+
+	"io/ioutil"
 
 	"github.com/coreos/go-etcd/etcd"
 )
@@ -28,25 +30,46 @@ func main() {
 
 	}
 
-	binary, lookErr := exec.LookPath("etcd")
-	if lookErr != nil {
-		panic(lookErr)
-	}
+	// binary, lookErr := exec.LookPath("etcd")
+	// if lookErr != nil {
+	// 	panic(lookErr)
+	// }
 
-	//	args := []string{"ls", "-a", "-l", "-h"}
-	args := []string{"ls,"}
-	env := os.Environ()
+	// //	args := []string{"ls", "-a", "-l", "-h"}
+	// args := []string{"ls,"}
+	// env := os.Environ()
 
-	execErr := syscall.Exec(binary, args, env)
-	if execErr != nil {
-		panic(execErr)
-	}
+	// execErr := syscall.Exec(binary, args, env)
+	// if execErr != nil {
+	// 	panic(execErr)
+	// }
 
 	client := etcd.NewClient([]string{"http://172.17.42.1:4002"})
 	cluster := client.GetCluster()
 	fmt.Println(cluster)
 	// client
 
+	// curl http://172.17.42.1:4002/v2/members -XPOST -H "Content-Type: application/json" -d '{"peerURLs":["http://10.0.0.10:2380"]}'
+	postData := `{"peerURLs":["http://10.0.0.10:2380"]}`
+	url := "http://172.17.42.1:4002/v2/members"
+	httpClient := &http.Client{}
+	req, err := http.NewRequest("POST", url, strings.NewReader(postData))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := httpClient.Do(req)
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
+	Eth0IPv4, err := externalIPFromIf("docker0")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println(Eth0IPv4)
 	// resp, err := client.Get("creds", false, false)
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -78,39 +101,46 @@ func loopWatch(client *etcd.Client, key string, watch chan *etcd.Response) {
 
 }
 
-func externalIP() (string, error) {
+func externalIPFromIf(ipv4Iface string) (string, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
 		return "", err
 	}
 	for _, iface := range ifaces {
-		if iface.Flags&net.FlagUp == 0 {
-			continue // interface down
-		}
-		if iface.Flags&net.FlagLoopback != 0 {
-			continue // loopback interface
-		}
+		// fmt.Print("nom de l'interface : \t")
+		// fmt.Print(iface.Name)
 
-		addrs, err := iface.Addrs()
-		if err != nil {
-			return "", err
-		}
-		for _, addr := range addrs {
-			var ip net.IP
-			switch v := addr.(type) {
-			case *net.IPNet:
-				ip = v.IP
-			case *net.IPAddr:
-				ip = v.IP
+		if strings.EqualFold(iface.Name, ipv4Iface) {
+
+			if iface.Flags&net.FlagUp == 0 {
+				continue // interface down
 			}
-			if ip == nil || ip.IsLoopback() {
-				continue
+			if iface.Flags&net.FlagLoopback != 0 {
+				continue // loopback interface
 			}
-			ip = ip.To4()
-			if ip == nil {
-				continue // not an ipv4 address
+
+			addrs, err := iface.Addrs()
+			if err != nil {
+				return "", err
 			}
-			return ip.String(), nil
+			for _, addr := range addrs {
+				var ip net.IP
+				switch v := addr.(type) {
+				case *net.IPNet:
+					ip = v.IP
+				case *net.IPAddr:
+					ip = v.IP
+				}
+				if ip == nil || ip.IsLoopback() {
+					continue
+				}
+				ip = ip.To4()
+				if ip == nil {
+					continue // not an ipv4 address
+				}
+				return ip.String(), nil
+			}
+
 		}
 	}
 	return "", errors.New("are you connected to the network?")
