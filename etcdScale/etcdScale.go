@@ -1,16 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
+	"os/signal"
 	"strings"
 	"time"
-
-	"io/ioutil"
 
 	"github.com/coreos/go-etcd/etcd"
 )
@@ -18,8 +20,19 @@ import (
 // http://blog.gopheracademy.com/advent-2013/day-06-service-discovery-with-etcd/
 
 func main() {
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	go func() {
+		for sig := range c {
+			log.Printf("captured %v, stopping profiler and exiting..", sig)
+
+			os.Exit(1)
+		}
+	}()
 	// used for test
-	os.Setenv("etcd_discovery", "testxs")
+	//	os.Setenv("etcd_discovery", "testxs")
 
 	filename := ".env_etcd"
 	if len(os.Getenv("etcd_discovery")) > 5 {
@@ -45,24 +58,15 @@ func main() {
 	// }
 
 	client := etcd.NewClient([]string{"http://172.17.42.1:4002"})
+
 	cluster := client.GetCluster()
 	fmt.Println(cluster)
 	// client
 
-	// curl http://172.17.42.1:4002/v2/members -XPOST -H "Content-Type: application/json" -d '{"peerURLs":["http://10.0.0.10:2380"]}'
-	postData := `{"peerURLs":["http://10.0.0.10:2380"]}`
-	url := "http://172.17.42.1:4002/v2/members"
-	httpClient := &http.Client{}
-	req, err := http.NewRequest("POST", url, strings.NewReader(postData))
-	if err != nil {
-		log.Fatalln(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
+	getEtcdCtlMemberAPI("infra5")
 
-	resp, err := httpClient.Do(req)
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	//	curl http://172.17.42.1:4002/v2/members -XPOST -H "Content-Type: application/json" -d '{"peerURLs":["http://10.0.0.10:2380"]}'
+	//	postData := `{"name":"infra5", "peerURLs":["http://172.17.42.1:4005"] }
 
 	Eth0IPv4, err := externalIPFromIf("docker0")
 	if err != nil {
@@ -70,6 +74,7 @@ func main() {
 	}
 
 	fmt.Println(Eth0IPv4)
+
 	// resp, err := client.Get("creds", false, false)
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -144,4 +149,87 @@ func externalIPFromIf(ipv4Iface string) (string, error) {
 		}
 	}
 	return "", errors.New("are you connected to the network?")
+}
+
+func printCommand(cmd *exec.Cmd) {
+	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
+}
+
+func printError(err error) {
+	if err != nil {
+		fmt.Print("error!!!")
+		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
+	}
+}
+
+func printOutput(outs []byte) {
+	if len(outs) > 0 {
+		fmt.Printf("==> Output: %s\n", string(outs))
+	}
+}
+
+func getEtcdMemberAPI() {
+
+	url := "http://172.17.42.1:4002/v2/members"
+	httpClient := &http.Client{}
+	//req, err := http.NewRequest("POST", url, strings.NewReader(postData))
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	var f interface{}
+	body, _ := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &f)
+	m := f.(map[string]interface{})
+
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "is string", vv)
+		case int:
+			fmt.Println(k, "is int", vv)
+		case []interface{}:
+			fmt.Println(k, "is an array:")
+			for i, u := range vv {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(k, "is of a type I don't know how to handle")
+		}
+	}
+	//fmt.Println(string(body))
+
+}
+
+func getEtcdCtlMemberAPI(machineName string) {
+	// machineName := "infra5"
+	cmd := exec.Command("etcdctl", "-C", "http://172.17.42.1:4002", "member", "add", machineName, "http://172.17.42.1:4005")
+	printCommand(cmd)
+	printMachineStatus(cmd.CombinedOutput())
+
+}
+
+func (string) printMachineStatus(stdOut []byte, stdErr error) {
+	if strings.Contains(string(stdOut), "Added member named "+machineName) {
+		printOutput(
+			stdOut,
+		)
+
+	} else {
+
+		printError(stdErr)
+
+	}
+}
+
+type machine struct {
+	status string
+	name   string
 }
